@@ -22,7 +22,9 @@ The main workflow can be presented as the following:
 
 to install packages use the following commands:
 >pip install tensorflow==1.13
+
 >pip install opencv-python
+
 >pip install scipy
 
 -imagePreprocess.py contains all preprocessing functions
