@@ -3,91 +3,13 @@ import math
 import cv2
 import numpy as np
 
-#return absolute angle between words in radians
-def getTheta(wrd1, wrd2):
-    x1 = wrd1[0]+wrd1[2] # x + w
-    y1 = wrd1[1]
-    x2 = wrd2[0]
-    y2 = wrd2[1]
-    #x2 should never be less than x1
-    if x2 < x1:
-        return (999, 9999)
-    theta = math.fabs( math.atan2((y2 - y1),(x2 - x1)) )
-    d = math.sqrt( (y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1) )
-    return (theta, d)
+def arrangeWords(words, width, height, factor = 1.2):
+    blockHeight = words[0][3] * factor
+    initHeight = words[0][1]
+    sortedWords = sorted(words, key=lambda entry:int((entry[1] + entry[3]/2)/ blockHeight) * width + entry[0])
+    return sortedWords
 
-#greedy approach to arrange lines
-#still under work not perfect yet
-def arrangeLines(words, maxAngle = 0.2 , maxSpace = 300):
-    lines = []
-    line = []
-    words = sorted(words, key=lambda entry:entry[1])
-    cWord = False
-    minX = 9999
-    minY = 9999
-    for wrd in words:
-        if wrd[0] < minX and wrd[1] < minY:
-            minX = wrd[0]
-            minY = wrd[1]
-            cWord = wrd
-    
-    while len(words) > 0:
-        minD = 999
-        found = False
-        nextWord = False
-        line.append(cWord)
-        words.remove(cWord)
-        for word in words:
-            (t, d) = getTheta(cWord, word)
-            if t < maxAngle and d < minD:
-                minD = d
-                found = True
-                nextWord = word
-        if found:
-            cWord = nextWord
-        else:
-            lines.append(line)
-            line = []
-            minX = 9999
-            minY = 9999
-            for wrd in words:
-                if wrd[0] < minX and wrd[1] < minY:
-                    minX = wrd[0]
-                    minY = wrd[1]
-                    cWord = wrd
 
-    final_lines = []
-    
-    while len(lines) > 1:
-        fln = lines[0]
-        lines.remove(fln)
-        ymax = 0
-        ymin = 9999
-        for l in fln:
-            if l[1] < ymin:
-                ymin = l[1]
-            if l[1] > ymax:
-                ymax = l[1]
-        canPush = True
-        while canPush:
-            canPush = False
-            for ln in lines:
-                if ln[0][1] <= ymax and ln[0][1] >= ymin:
-                    canPush = True
-                    for x in ln:
-                        fln.append(x)
-                    for l in fln:
-                        if l[1] < ymin:
-                            ymin = l[1]
-                        if l[1] > ymax:
-                            ymax = l[1]
-                    lines.remove(ln)
-        final_lines.append(fln)
-
-    for l in final_lines:
-        print(l)
-        
-    return final_lines
 
 
 #function to arrange contures into paragraph

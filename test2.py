@@ -1,3 +1,3 @@
 import test
 
-test.testPredictionX('../constain6', 'paragraphs', 0,10)
+test.cropWordsX('paragraphs', 'wordOutputs', 0,10)

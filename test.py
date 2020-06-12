@@ -94,6 +94,18 @@ def testLineDetection(img):
     ipp.showImage("lines", img)
     cv2.waitKey(0)
 
+def testLineDetection2(img):
+    width, height, _ = img.shape
+    binImage = ipp.clearImageToBinary(img)
+    lineCtrs = ipp.findContureDataLine(binImage)
+    for i, line in enumerate(lineCtrs):
+        (x, y, w, h) = line
+        cv2.rectangle(img,(x,y), (x + w,y+ h),(i * 40 , 0,0),4)
+    ipp.showImage("lines", img)
+    cv2.waitKey(0)
+
+
+
 #test for predicting
 def testPredictionX(folder,outFolder, n1, n2):
     for testImagePath in os.listdir(folder)[n1:n2]:
@@ -233,3 +245,18 @@ def cropParagraphsX(folder, outFolder, n1, n2):
         #out = trimImage(out)
             cv2.imwrite(outFolder + "/x" + str(j) + testImagePath, out)
 #testPrediction('../constain6',7,10)
+
+def cropWordsX(folder, outFolder, n1, n2):
+    for testImagePath in os.listdir(folder)[n1:n2]:
+        print("cropping word from " + testImagePath)
+        inputImage = cv2.imread(folder + '/' + testImagePath)
+        width, height, _ = inputImage.shape
+        binImage = ipp.clearImageToBinary(inputImage)
+        ctours = ipp.findContureData(binImage)
+        dirName = outFolder + '/' + testImagePath
+        os.makedirs(dirName)
+        for j, out in enumerate(ctours):
+            (x, y, w, h) = out
+            output = inputImage[y:y+h , x:x+w]
+            cv2.imwrite(dirName + "/" + str(j)+'.tif', output)
+

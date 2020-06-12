@@ -1,5 +1,7 @@
 import test
 import cv2
+import os
+
 
 #test.testPrediction('../constain6', 'paraScreenShot', 50, 120);
 
@@ -10,5 +12,13 @@ import cv2
 
 #img = cv2.imread('paragraphs/x0Scan0011.jpg')
 
-img = cv2.imread('paragraphs/x0Scan_10012.jpg')
-test.testLineDetectionX('paragraphs', 'lineScreenShot',1, 10)
+
+folder = 'paragraphs'
+files = os.listdir(folder)
+
+index = 1
+while(index < 7):
+    imgPath = folder + '/' + files[index] 
+    img = cv2.imread(imgPath)
+    test.testLineDetection2(img)
+    index = index + 1

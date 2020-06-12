@@ -248,16 +248,39 @@ def findContureData(img, minAreaFraction = 0.001):
             y1 = y + h1
             cbox1 = (x,y,w, h1)
             cbox2 = (x, y1, w, h2)
-            cimg1 = img[y:y+h1, x:x+w]
-            cimg2 = img[y+h1:y+h2, x:x+w]
             res.append(cbox1)
             res.append(cbox2)
         else:
-            currImg = img[y:y+h, x:x+w]
             res.append(currBox)
 
     # return list of words, sorted by x-coordinate
     return sorted(res, key=lambda entry:entry[1] * width + entry[0])
+
+
+#find line contures in paragraph image
+def findContureDataLine(img):
+    thresh = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)[1]
+    #turn the image into pieces of connected blocks
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (100,6)) 
+    dilate = cv2.dilate(thresh, kernel, iterations=2)
+    
+    #finding contures
+    cnts = cv2.findContours(dilate, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = cnts[0] if len(cnts) == 2 else cnts[1]
+
+    # append components to result
+    res = []
+    j = 0
+    for c in cnts:
+        # skip small word candidates
+        # append bounding box and image of word to result list
+        currBox = cv2.boundingRect(c) # returns (x, y, w, h)
+        res.append(currBox)
+
+    # return list of words, sorted by x-coordinate
+    return sorted(res, key=lambda entry:entry[1])
+
+
 
 #find paragraph contures of an image
 def findContureDataParagraph(img):
