@@ -258,5 +258,9 @@ def cropWordsX(folder, outFolder, n1, n2):
         for j, out in enumerate(ctours):
             (x, y, w, h) = out
             output = inputImage[y:y+h , x:x+w]
-            cv2.imwrite(dirName + "/" + str(j)+'.tif', output)
+            subparts = testImagePath.split('/')
+            sunpart = subparts[len(subparts) -1]
+            subparts2 = sunpart.split('.')[0].split('_')
+            tempName = subparts2[0] + '_' + subparts2[2] +'_'+ str(j)+ '.tif';
+            cv2.imwrite(dirName + "/" + tempName, output)
 
