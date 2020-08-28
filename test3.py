@@ -1,14 +1,13 @@
 #import test
+import cv2
+import imagePreprocess as ipp
 
 #test.sliceData('../constain6', 'samples')
 fileName = 'folder1/folder2/0000_01_02.tif'
 
-subparts = fileName.split('/')
-sunpart = subparts[len(subparts) -1]
-subparts2 = sunpart.split('.')[0].split('_')
-tempName = subparts2[0] + '_' + subparts2[2] + '.tif';
+imagePath = 'Scan_30027.jpg'
 
-
-print(tempName)
-
+img = cv2.imread(imagePath)
+clearImage = ipp.clearImageToBinary(img)
+cv2.imwrite("output.png", clearImage)
 
